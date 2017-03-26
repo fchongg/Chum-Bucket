@@ -73,13 +73,14 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
                 session.send(JSON.stringify(err));
             }
             else {
-                var links = (results.map((res)=>res.link));
+                var links = (results.map((res)=>`${res.title} - ${res.link} :cat2:`));
                 
                 var unique = links.filter(function(elem, index, self) {
                     return index == self.indexOf(elem);
                 })
                 
-                session.send(JSON.stringify(unique));
+                unique.forEach( ( unique)=>{ session.send( unique ) } );
+                //session.send(JSON.stringify(unique));
             }
     });
     
@@ -161,8 +162,8 @@ function saveUrl(session, validUrl, next){
             "conversationId": session.message.address.conversation.id,
             "title": response.title ,
             "body": response.body, 
-            "link":validUrl
-            
+            "link":validUrl,
+            "user": session.message.user.name
         };
         client.addDocuments("htmldata", [linktosave], next);
         
@@ -184,6 +185,6 @@ function getTag(res_text, tag){
         return "";
     }
 
-    return res_text.substring(start+(tag.length), end);
+    return res_text.substring(start+(tag.length)+2, end);
 }
  
